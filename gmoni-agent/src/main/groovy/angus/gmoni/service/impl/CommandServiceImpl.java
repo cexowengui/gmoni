@@ -23,7 +23,7 @@ import angus.gmoni.service.CommandService;
 
 @Service("commandService")
 public class CommandServiceImpl implements CommandService {
-	private static final Logger LOG =LoggerFactory.getLogger(CommandServiceImpl.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CommandServiceImpl.class);
 	private int TIMEOUT = 3600000;
 	private Map<String, CommandLocal> locals = new ConcurrentHashMap<String, CommandLocal>();
 
@@ -36,23 +36,24 @@ public class CommandServiceImpl implements CommandService {
 					try {
 						long now = new Date().getTime();
 						for (CommandLocal cl : locals.values()) {
-							//stop timeout job
+							// stop timeout job
 							if (cl.timeout(now)) {
 								LOG.info(String.format("command timeout, id: %s", cl.id));
 							}
-							
-							//remove stop job after 1 hour
+
+							// remove stop job after 1 hour
 							if (cl.status != CommandStatus.running && now - cl.stop_time > TIMEOUT) {
 								removes.add(cl.id);
 							}
 						}
-						
+
 						for (String id : removes) {
 							locals.remove(id);
 						}
-						
+
 						Thread.sleep(1000);
-					} catch (Exception e) {}
+					} catch (Exception e) {
+					}
 				}
 			}
 		}).start();
@@ -64,19 +65,14 @@ public class CommandServiceImpl implements CommandService {
 		final List<String> out = new ArrayList<String>();
 		Commandline cl = new Commandline(cmd);
 		try {
-			int result = CommandLineUtils.executeCommandLine(cl, new StreamConsumer() {
-				@Override
-				public void consumeLine(String line) {
-					LOG.debug(String.format("std out: %s", line));
-					out.add(line);
-				}
-			}, new StreamConsumer() {
-				@Override
-				public void consumeLine(String line) {
-					LOG.debug(String.format("err out: %s", line));
-					out.add(line);
-				}
+			int result = CommandLineUtils.executeCommandLine(cl, (String line) -> {
+				LOG.debug(String.format("std out: %s", line));
+				out.add(line);
+			}, line ->{
+				LOG.debug(String.format("err out: %s", line));
+				out.add(line);
 			});
+					
 			LOG.debug(String.format("result: %s", result));
 		} catch (CommandLineException e) {
 			throw new RuntimeException(String.format("error when execute command: %s", cmd));
@@ -90,7 +86,7 @@ public class CommandServiceImpl implements CommandService {
 		final String id = UUID.randomUUID().toString().replaceAll("-", "").toLowerCase();
 		final CommandLocal cl = new CommandLocal(id, cmd, background);
 		locals.put(id, cl);
-		
+
 		Thread t = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -116,47 +112,46 @@ public class CommandServiceImpl implements CommandService {
 				}
 			}
 		});
-		
+
 		cl.thread = t;
 		t.start();
-		
+
 		return id;
 	}
 
 	@Override
 	public String consume(String id) {
-		CommandLocal cl = locals.get(id); 
+		CommandLocal cl = locals.get(id);
 		if (cl == null) {
 			return null;
 		}
-		
+
 		List<String> lines = cl.read();
-		if (cl.status != CommandStatus.running 
-				&& lines.size() == 0) {
+		if (cl.status != CommandStatus.running && lines.size() == 0) {
 			return null;
 		}
-		
+
 		return StringUtils.join(lines, IOUtils.LINE_SEPARATOR);
 	}
 
 	@Override
 	public void terminate(String id) {
-		CommandLocal cl = locals.get(id); 
+		CommandLocal cl = locals.get(id);
 		if (cl != null) {
 			cl.terminate();
 		}
 	}
-	
+
 	@Override
 	public String getStatus(String id) {
-		CommandLocal cl = locals.get(id); 
+		CommandLocal cl = locals.get(id);
 		if (cl == null) {
 			return "unknown";
 		} else {
 			return cl.status.name();
 		}
 	}
-	
+
 	@Override
 	public List<Command> getCommands() {
 		List<Command> list = new ArrayList<Command>();
@@ -165,7 +160,7 @@ public class CommandServiceImpl implements CommandService {
 		}
 		return list;
 	}
-	
+
 	@Override
 	public Command getCommand(String id) {
 		CommandLocal cl = locals.get(id);
@@ -175,7 +170,7 @@ public class CommandServiceImpl implements CommandService {
 			return compose_command(cl);
 		}
 	}
-	
+
 	private Command compose_command(CommandLocal cl) {
 		Command c = new Command();
 		c.setBackground(cl.background);
@@ -189,13 +184,9 @@ public class CommandServiceImpl implements CommandService {
 	}
 
 	enum CommandStatus {
-		running,
-		error,
-		finish,
-		timeout,
-		terminate
+		running, error, finish, timeout, terminate
 	}
-	
+
 	class CommandLocal {
 		private static final int BUFFER_LINES = 512;
 
@@ -208,7 +199,7 @@ public class CommandServiceImpl implements CommandService {
 		private CommandStatus status;
 		private ConcurrentLinkedQueue<String> buffer;
 		private long read_time;
-		
+
 		public CommandLocal(String id, String command, boolean background) {
 			this.id = id;
 			this.command = command;
@@ -220,15 +211,15 @@ public class CommandServiceImpl implements CommandService {
 			status = CommandStatus.running;
 			buffer = new ConcurrentLinkedQueue<String>();
 		}
-		
+
 		public void write(String line) {
 			if (buffer.size() > BUFFER_LINES) {
 				buffer.remove();
 			}
 			buffer.add(line);
-			//last_write_time = new Date().getTime();
+			// last_write_time = new Date().getTime();
 		}
-		
+
 		public List<String> read() {
 			List<String> list = new ArrayList<String>();
 			while (buffer.size() > 0) {
@@ -237,26 +228,27 @@ public class CommandServiceImpl implements CommandService {
 			read_time = new Date().getTime();
 			return list;
 		}
-		
+
 		public void finish() {
 			if (status == CommandStatus.running) {
 				status = CommandStatus.finish;
 			}
 			stop_time = new Date().getTime();
 		}
-		
+
 		public void error() {
 			if (status == CommandStatus.running) {
 				status = CommandStatus.error;
 			}
 			stop_time = new Date().getTime();
 		}
-		
+
 		public void terminate() {
 			if (thread != null) {
 				try {
 					thread.interrupt();
-				} catch (Exception e) {}
+				} catch (Exception e) {
+				}
 				thread = null;
 			}
 			if (status == CommandStatus.running) {
@@ -264,7 +256,7 @@ public class CommandServiceImpl implements CommandService {
 			}
 			stop_time = new Date().getTime();
 		}
-		
+
 		public boolean timeout(long now) {
 			if (background || now - read_time < TIMEOUT) {
 				return false;
@@ -273,12 +265,13 @@ public class CommandServiceImpl implements CommandService {
 					LOG.info(String.format("command timeout: %s", thread.getName()));
 					try {
 						thread.interrupt();
-					} catch (Exception e) {}
+					} catch (Exception e) {
+					}
 					thread = null;
 				}
-				
+
 				buffer.clear();
-				
+
 				if (status == CommandStatus.running) {
 					status = CommandStatus.timeout;
 					stop_time = new Date().getTime();
