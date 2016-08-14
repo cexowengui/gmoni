@@ -1,18 +1,18 @@
 *.class
  
 # Package Files #
-*.jar
 *.war
 *.ear
  
 # ignore Maven generated target folders
 #匹配子目录中所有bin和target文件夹及其内容
-target/
-bin/   
+gmoni-agent/target/
+gmoni-server/target/
+gmoni-agent/bin/
+gmoni-server/bin/      
  
 # ignore eclipse files 
 #如果只匹配根目录的文件，那么使用/*.project
 .project
 .classpath
 .settings
-.metadata
