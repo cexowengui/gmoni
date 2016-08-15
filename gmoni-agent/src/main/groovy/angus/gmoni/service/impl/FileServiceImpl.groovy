@@ -1,7 +1,9 @@
 package angus.gmoni.service.impl
 
 
+import java.awt.image.DataBufferDouble;
 import java.io.IOException
+import java.lang.ref.ReferenceQueue.Null;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileStore
 import java.nio.file.FileSystems;
@@ -12,6 +14,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +33,8 @@ class FileServiceImpl implements FileService{
 
 	@Override
 	public FileInfo getPath(String path) throws IOException {
-		if(path == ".") path=""
-
+		if(path == "." ||path == null) path=""
+		
 		Path p = Paths.get(path)
 
 		return getFileInfo(p);
@@ -80,11 +83,13 @@ class FileServiceImpl implements FileService{
 		String when = ldt.format(f)
 		fi.lastModifiedTime = when
 
-		fi.name = path.getFileName()
+		fi.name = path.getFileName() ? path.getFileName(): path.toAbsolutePath().toString()
+		
 		fi.onwer = Files.getOwner(path).toString()
-		fi.size = (long) Files.size(path)	/ 1024
+		fi.size = (double) Files.size(path)	/ 1024.0
 		FileStore store = Files.getFileStore(path);
 
+		//表示文件或目录所在盘符的大小，已使用和可用 KB
 		fi.total =(long) store.getTotalSpace() / 1024
 		fi.used = (long)  (store.getTotalSpace() - store.getUnallocatedSpace()) / 1024
 		fi.available =(long)   store.getUsableSpace() / 1024

@@ -7,11 +7,11 @@ import org.springframework.boot.builder.SpringApplicationBuilder
 
 
 @SpringBootApplication
-class AgentBootMain {
+class AgentBoot {
 
 	static void main(String[] args){
 		new SpringApplicationBuilder()
-				.sources(AgentBootMain.class)
+				.sources(AgentBoot.class)
 				.bannerMode(Banner.Mode.OFF)
 				.run()
 	}

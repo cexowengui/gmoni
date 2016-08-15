@@ -22,24 +22,14 @@ class FileController {
 	@Autowired
 	private FileService fileService
 
-	@RequestMapping(value="/file", method=RequestMethod.GET)
+	@RequestMapping(value="/file", method=RequestMethod.POST)
 	@ResponseBody
 	public FileInfo getFile(@RequestParam(value="path", required=false) String path) throws IOException {
-		if (path == "" || path == null) path=""
+		
 		return fileService.getPath(path)
 	}
 
-	@RequestMapping(value="/filej", method=RequestMethod.GET)
-	@ResponseBody
-	public String getFileJson(@RequestParam(value="path", required=false) String path) throws IOException {
-		if (path == "" || path == null) path=""
-		FileInfo fi =  fileService.getPath(path)
-
-		return new JsonBuilder(fi).toPrettyString()
-	}
-
-
-	@RequestMapping(value="/file/list", method=RequestMethod.GET)
+	@RequestMapping(value="/file/list", method=RequestMethod.POST)
 	@ResponseBody
 	public List<File> listFiles(@RequestParam(value="path", required=false) String path) throws IOException {
 		if (path == "" || path == null) {
