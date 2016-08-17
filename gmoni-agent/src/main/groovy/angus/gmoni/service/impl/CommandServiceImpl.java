@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.codehaus.groovy.tools.shell.Command;
 import org.codehaus.plexus.util.cli.CommandLineException;
 import org.codehaus.plexus.util.cli.CommandLineUtils;
 import org.codehaus.plexus.util.cli.Commandline;
@@ -18,8 +19,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import angus.gmoni.domain.Command;
 import angus.gmoni.service.CommandService;
+
+
+
+
 
 @Service("commandService")
 public class CommandServiceImpl implements CommandService {

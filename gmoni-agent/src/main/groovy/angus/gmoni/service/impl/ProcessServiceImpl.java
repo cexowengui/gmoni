@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-
 import org.apache.commons.lang3.StringUtils;
 import org.hyperic.sigar.ProcCpu;
 import org.hyperic.sigar.ProcCredName;
@@ -22,10 +21,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import angus.gmoni.domain.Process;
+import angus.gmoni.domain.Stack;
 import angus.gmoni.service.CommandService;
 import angus.gmoni.service.ProcessService;
-import angus.gmoni.domain.*;
-import angus.gmoni.domain.Process;
 
 @Service("processService")
 public class ProcessServiceImpl implements ProcessService {
