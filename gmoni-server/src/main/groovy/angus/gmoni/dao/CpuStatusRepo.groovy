@@ -4,13 +4,13 @@ import javax.transaction.Transactional
 
 import org.springframework.data.repository.CrudRepository
 
-import angus.gmoni.domain.CpuData
+import angus.gmoni.domain.CpuStatus
 import angus.gmoni.domain.Pk
 
 
 @Transactional
-interface  CpuDataRepo extends CrudRepository<CpuData, Pk>{
+interface  CpuStatusRepo extends CrudRepository<CpuStatus, Pk>{
 	
-
+	public List<CpuStatus> findByAgent(String agent)
 
 }

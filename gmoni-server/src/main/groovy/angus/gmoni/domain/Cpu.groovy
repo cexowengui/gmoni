@@ -1,5 +1,5 @@
 package angus.gmoni.domain
 
-class EntityBase {
+class Cpu {
 
 }

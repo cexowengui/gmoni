@@ -9,11 +9,8 @@ import javax.persistence.Table
 
 @TypeChecked
 @Entity
-@Table
-class CpuData {
-	
-	@EmbeddedId
-	Pk id;
+class CpuStatus extends Base{
+	//primary key in Base
 	
 	double user
 	double sys
@@ -24,4 +21,5 @@ class CpuData {
 	double softIrq
 	double stolen
 	double combined
+	
 }

@@ -22,7 +22,7 @@ class ProcessController {
 	private ProcessService processService
 
 	
-	@RequestMapping(value="/process", method=RequestMethod.GET)
+	@RequestMapping(value="/process", method=RequestMethod.POST)
 	@ResponseBody
 	public List<angus.gmoni.domain.Process> findProcesses(@RequestParam(value="query", required=false) String query) {
 		return processService.findProcesses(StringUtils.split(query, ' '))

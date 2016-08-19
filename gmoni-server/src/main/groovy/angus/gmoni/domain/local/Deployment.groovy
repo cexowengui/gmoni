@@ -1,11 +1,8 @@
-package angus.gmoni.domain
+package angus.gmoni.domain.local
 
 import groovy.transform.TypeChecked
 
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.Table
 
@@ -14,11 +11,11 @@ import javax.persistence.Table
 @Table
 class Deployment {
 
-	
-	@EmbeddedId
-	Pk id;
+	//one node environment arguments
+	@Id
+	String agent
 	String description
-	int instanceCount //agentCount
+	int instanceCount //processes instance
 	String pidFile
 	String user
 	String workingDirectory

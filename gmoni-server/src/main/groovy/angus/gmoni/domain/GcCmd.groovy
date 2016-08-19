@@ -1,7 +1,7 @@
 package angus.gmoni.domain
 
 
-class Gc {
+class GcCmd {
 	
 	 String commandId;
 	 String agentId;
