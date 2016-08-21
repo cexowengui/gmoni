@@ -15,9 +15,9 @@ class Node {
 	
 	@Id
 	String agent
-	String schema
-	String address
-	int port
+	String schema ="http" //默认是http
+	String address //ip地址或者域名也行
+	int port 
 	String hostname
 	String description
 	String location
