@@ -6,9 +6,12 @@ import org.springframework.boot.Banner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.builder.SpringApplicationBuilder
 
+import angus.gmoni.config.NodeInitializer
+
 @TypeChecked
 @SpringBootApplication
 class ServerBoot {
+	
 	
 	static void main(String[] args){
 		configNode();
@@ -22,6 +25,7 @@ class ServerBoot {
 	static void configNode(){
 		//启动server之前，需要预先设置好数据中的node表，表示需要监视的节点
 		//可以采用json文件，配置好，读取，然后持久化即可。
+		(new NodeInitializer).initNodeConfig();
 	}
 
 }

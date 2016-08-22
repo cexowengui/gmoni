@@ -1,0 +1,36 @@
+[
+	{
+		"agent": "127.0.0.1",
+		"schema": "http",
+		"address": "127.0.0.1",
+		"port": "8090",
+		"hostname": "",
+		"description": "这个是本地节点，作为测试用",
+		"location": "",
+		"osName": "",
+		"osVersion": "",
+		"cpu": "",
+		"architecture": "",
+		"idRsa": "",
+		"idRsaPub": "",
+		"createTime": "2016-08-11 23:12:10",
+		"enabled": "true"
+	},
+	{
+		"agent": "192.168.100.2",
+		"schema": "http",
+		"address": "192.168.100.2",
+		"port": "8090",
+		"hostname": "",
+		"description": "这个是测试服务起，虚假的",
+		"location": "",
+		"osName": "",
+		"osVersion": "",
+		"cpu": "",
+		"architecture": "",
+		"idRsa": "",
+		"idRsaPub": "",
+		"createTime": "2016-08-11 23:12:10",
+		"enabled": "true"
+	}
+]
