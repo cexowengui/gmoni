@@ -56,12 +56,6 @@ dependencies {
 }
 
 
-//Ìí¼Ósigar libµ½native path
-tasks.withType(Test) {
-    systemProperty "java.library.path", "./lib"
-}
-
-
 
 
 
